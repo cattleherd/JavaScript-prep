@@ -1,0 +1,3 @@
+# Ignore Microsoft Word documents
+*.docx
+*.tmp
