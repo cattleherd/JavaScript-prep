@@ -165,3 +165,41 @@ function countUniqueElements(arr) {
 module.exports = { countUniqueElements };
 
 ```
+
+
+
+## Circular shift in arrays
+
+### Problem 
+
+- Your task is to create a JavaScript function that should shift every element in the array to the right    (for a positive shift) or to the left (for a negative shift) by shift positions. The shift should be circular — the last element should be moved to the start of the array if shift is positive, and vice versa
+
+--- 
+
+```jsx
+function shiftArrayElements(arr, shift) {
+  // Normalize shift into the range [0, arr.length - 1]
+  if (shift >= 0) {
+    // For positive shifts, just modulo by length
+    shift = shift % arr.length;
+  } else {
+    // For negative shifts, bring into positive range:
+    // e.g. shift = -2, length = 5 → (-2 % 5) = -2 → +5 = 3
+    // which means shifting left by 2 is the same as shifting right by 3
+    shift = (shift % arr.length) + arr.length;
+  }
+
+  const shifted = new Array(arr.length);
+
+  // Move each element forward by `shift`, wrapping around via modulo
+  for (let i = 0; i < arr.length; i++) {
+    const newIndex = (i + shift) % arr.length;
+    shifted[newIndex] = arr[i];
+  }
+
+  return shifted;
+}
+
+module.exports = { shiftArrayElements };
+
+```
