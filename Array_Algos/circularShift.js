@@ -1,28 +1,33 @@
-/**
- * Circular Array Shift
- * --------------------
- * Shifts the elements of an array to the right by k positions, wrapping around.
- * Does not use built-in slice(), splice(), or shift() methods.
- *
- * @param {number[]} arr - The original array to shift.
- * @param {number} k - Number of positions to shift.
- * @returns {number[]} - The shifted array.
- *
- * Example:
- *   circularShift([1, 2, 3, 4, 5], 2) => [4, 5, 1, 2, 3]
- */
-function circularShift(arr, k) {
-  //[1,2,3,4,5]
-  const result = new Array(arr.length);
+function isSubarray(arrayA, arrayB) {
+    // TODO: implement solution
+    // 1 2 3 4
+    //[2,3]
+    //  [2,3]   <== match found!
+    //[3,2,3,4]
+    
+    //outer loop range is i = 0; i <= ArrayA.length - ArrayB.length
+    // inner loop compares corrosponding elements in ArrayA with ArrayB, shifted by 
+    
+    if(arrayB.length > arrayA.length){
+        return false;
+    }
+    
+    if(arrayB.length === 0){
+        return true;
+    }
+    
+    for(let i = 0; i <= (arrayA.length - arrayB.length); i++){
+        let match = true;
+        for(let j = 0; j < arrayB.length; j++){
+            if(arrayB[j] !== arrayA[i + j]){
+                match = false;
+                break;
+            }
+        }
+        return match;
+    }
+    
 
-  for (let i = 0; i < arr.length; i++) {
-    result[(i + k) % arr.length] = arr[i];
-  }
-
-  return result;
 }
 
-// Example tests:
-console.log(circularShift([1, 2, 3, 4, 5], 1)); // [5, 1, 2, 3, 4]
-console.log(circularShift([1, 2, 3, 4, 5], 2)); // [4, 5, 1, 2, 3]
-console.log(circularShift([1, 2, 3, 4, 5], 5)); // [1, 2, 3, 4,]()
+module.exports = { isSubarray };

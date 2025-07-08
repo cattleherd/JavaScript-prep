@@ -203,3 +203,60 @@ function shiftArrayElements(arr, shift) {
 module.exports = { shiftArrayElements };
 
 ```
+
+### Contiguous Subarrays
+
+- You are provided with two arrays of integers, arrayA and arrayB. Your task is to determine if arrayB is a contiguous subarray of arrayA. You need to return true if arrayB is a contiguous subarray of arrayA, and false otherwise.
+
+A subarray is defined as a subset of consecutive elements within an array. For instance, [2, 3] is a subarray of [1, 2, 3, 4] but not a subarray of [1, 3, 2, 4].
+
+Note that you are not allowed to use any built-in JavaScript functions for this task except for accessing array length using length. All other operations should be executed with basic JavaScript programming constructs.
+
+```jsx
+/**
+ * Checks if arrayB appears as a contiguous subarray within arrayA.
+ *
+ * @param {any[]} arrayA  - The larger array to search within.
+ * @param {any[]} arrayB  - The subarray pattern to look for.
+ * @returns {boolean}     - True if arrayB is found contiguously inside arrayA.
+ */
+function isSubarray(arrayA, arrayB) {
+  // If B is longer than A, it can't fit.
+  if (arrayB.length > arrayA.length) {
+    return false;
+  }
+
+  // By definition, an empty array is always a subarray.
+  if (arrayB.length === 0) {
+    return true;
+  }
+
+  // We will slide a window of size B.length over A.
+  // The last valid start index is (arrayA.length - arrayB.length).
+  for (let i = 0; i <= arrayA.length - arrayB.length; i++) {
+    // Assume a match until proven otherwise.
+    let match = true;
+
+    // Compare each element in B to the corresponding element in A.
+    for (let j = 0; j < arrayB.length; j++) {
+      if (arrayA[i + j] !== arrayB[j]) {
+        // Mismatch found: this window doesn't match B.
+        match = false;
+        break;
+      }
+    }
+
+    // If all elements matched, we've found B in A.
+    if (match) {
+      return true;
+    }
+  }
+
+  // No matching window was found.
+  return false;
+}
+
+module.exports = { isSubarray };
+
+
+```
