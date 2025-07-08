@@ -88,7 +88,7 @@ function getPrimeFactors(n) {
 module.exports = { getPrimeFactors };
 ```
 
-2) O(sqrtn) version
+2. O(sqrtn) version
 
 ```jsx
 function getPrimeFactors(n) {
@@ -96,14 +96,14 @@ function getPrimeFactors(n) {
 
   // --- pull out 2’s once ---
   if (n % 2 === 0) {
-    factors.push(2);          // record the prime 2
+    factors.push(2); // record the prime 2
     while (n % 2 === 0) n /= 2; // divide n by 2 until it’s odd
   }
 
   // --- test only odd p up to √n ---
   for (let p = 3; p * p <= n; p += 2) {
     if (n % p === 0) {
-      factors.push(p);        // record p once
+      factors.push(p); // record p once
       while (n % p === 0) n /= p; // strip all multiples of p
     }
   }
@@ -113,23 +113,21 @@ function getPrimeFactors(n) {
 
   return factors;
 }
-
-
 ```
 
-1) here we reduce n by each factor
- - first we remove all 2s (2*2*2*2) by first adding the factor 2, then repeatedly dividing by 2 until odd
+1. here we reduce n by each factor
 
-2) then we test all odd p until sqrt(n) since relationship that n = m * n where m and n are factors, and either m or n are guaranteed to be <= sqrt(n)
- 
-  - everytime we find an odd p factor, we repeatedly divide n by p to remove it.
+- first we remove all 2s (2*2*2\*2) by first adding the factor 2, then repeatedly dividing by 2 until odd
 
-3) if the final n is > 1 its still a prime so we push it too.
+2. then we test all odd p until sqrt(n) since relationship that n = m \* n where m and n are factors, and either m or n are guaranteed to be <= sqrt(n)
 
+- everytime we find an odd p factor, we repeatedly divide n by p to remove it.
+
+3. if the final n is > 1 its still a prime so we push it too.
 
 # Arrays
 
-## Problem 
+## Problem
 
 - You are given an array of n integers. Your task is to return the number of unique elements in the array — an element is unique if it appears only once in the array. You cannot use any built-in JavaScript functions to achieve this. **Do not** use any built-in JavaScript methods (like `Set`, `filter`, etc.).
 
@@ -139,42 +137,39 @@ function getPrimeFactors(n) {
 
 ```jsx
 function countUniqueElements(arr) {
-    // TODO: Implement the function that counts unique elements in the given array.
-    
-    let count = 0; //number of unique elements
-    
-    let found = {} //track elements found
-    
-    for(let i = 0; i < arr.length; i++){
-        // if element already counted, its not unique so remove it from count
-        if(found[arr[i]] && found[arr[i]] === 'counted'){
-            found[arr[i]] = 'removed';
-            count--;
-        }
-        //if a element is found to be unique (thus far), add it to the counted object
-        // and increment the global counter
-        if(!found[arr[i]]){
-            found[arr[i]] = 'counted';
-            count+=1;
-        }
-    }
+  // TODO: Implement the function that counts unique elements in the given array.
 
-    return count > 0 ? count : 0; //return count or 0 if no unique elements.
+  let count = 0; //number of unique elements
+
+  let found = {}; //track elements found
+
+  for (let i = 0; i < arr.length; i++) {
+    // if element already counted, its not unique so remove it from count
+    if (found[arr[i]] && found[arr[i]] === "counted") {
+      found[arr[i]] = "removed";
+      count--;
+    }
+    //if a element is found to be unique (thus far), add it to the counted object
+    // and increment the global counter
+    if (!found[arr[i]]) {
+      found[arr[i]] = "counted";
+      count += 1;
+    }
+  }
+
+  return count > 0 ? count : 0; //return count or 0 if no unique elements.
 }
 
 module.exports = { countUniqueElements };
-
 ```
-
-
 
 ## Circular shift in arrays
 
-### Problem 
+### Problem
 
-- Your task is to create a JavaScript function that should shift every element in the array to the right    (for a positive shift) or to the left (for a negative shift) by shift positions. The shift should be circular — the last element should be moved to the start of the array if shift is positive, and vice versa
+- Your task is to create a JavaScript function that should shift every element in the array to the right (for a positive shift) or to the left (for a negative shift) by shift positions. The shift should be circular — the last element should be moved to the start of the array if shift is positive, and vice versa
 
---- 
+---
 
 ```jsx
 function shiftArrayElements(arr, shift) {
@@ -201,10 +196,9 @@ function shiftArrayElements(arr, shift) {
 }
 
 module.exports = { shiftArrayElements };
-
 ```
 
-### Contiguous Subarrays
+### Contiguous Subarrays (Sliding Window)
 
 - You are provided with two arrays of integers, arrayA and arrayB. Your task is to determine if arrayB is a contiguous subarray of arrayA. You need to return true if arrayB is a contiguous subarray of arrayA, and false otherwise.
 
@@ -212,51 +206,50 @@ A subarray is defined as a subset of consecutive elements within an array. For i
 
 Note that you are not allowed to use any built-in JavaScript functions for this task except for accessing array length using length. All other operations should be executed with basic JavaScript programming constructs.
 
+---
+
 ```jsx
-/**
- * Checks if arrayB appears as a contiguous subarray within arrayA.
- *
- * @param {any[]} arrayA  - The larger array to search within.
- * @param {any[]} arrayB  - The subarray pattern to look for.
- * @returns {boolean}     - True if arrayB is found contiguously inside arrayA.
- */
+// 1 2 3 4
+//[2,3]
+//  [2,3]   <== match found!
+//[3,2,3,4]
+
+//outer loop range is i = 0; i <= ArrayA.length - ArrayB.length
+// inner loop compares corrosponding elements in ArrayA with ArrayB, shifted by
+
 function isSubarray(arrayA, arrayB) {
-  // If B is longer than A, it can't fit.
+  // If B is longer than A, it can't fit as a contiguous block
   if (arrayB.length > arrayA.length) {
     return false;
   }
 
-  // By definition, an empty array is always a subarray.
+  // An empty array is trivially a subarray
   if (arrayB.length === 0) {
     return true;
   }
 
-  // We will slide a window of size B.length over A.
-  // The last valid start index is (arrayA.length - arrayB.length).
+  // Slide a window of length B.length across A:
+  // i goes from 0 up to the last possible start index
   for (let i = 0; i <= arrayA.length - arrayB.length; i++) {
-    // Assume a match until proven otherwise.
-    let match = true;
+    let match = true; // assume match until a mismatch is found
 
-    // Compare each element in B to the corresponding element in A.
+    // Compare each element of B to the corresponding element in A
     for (let j = 0; j < arrayB.length; j++) {
-      if (arrayA[i + j] !== arrayB[j]) {
-        // Mismatch found: this window doesn't match B.
-        match = false;
-        break;
+      if (arrayB[j] !== arrayA[i + j]) {
+        match = false; // found a mismatch in this window
+        break; // stop checking this window early
       }
     }
 
-    // If all elements matched, we've found B in A.
-    if (match) {
-      return true;
+    // If no mismatches, we've found B in A
+    if (match === true) {
+      return match;
     }
   }
 
-  // No matching window was found.
-  return false;
+  // If we've tried every window and never returned, B isn't in A
+  return match;
 }
 
 module.exports = { isSubarray };
-
-
 ```
