@@ -1,3 +1,5 @@
+https://codesignal.com/blog/interview-prep/example-codesignal-questions/
+
 # Standard Math Algos
 
 ### nth prime
@@ -209,9 +211,9 @@ Note that you are not allowed to use any built-in JavaScript functions for this 
 ---
 
 ```jsx
-// 1 2 3 4
+// 0 1 2 3  <== outer i
 //[2,3]
-//  [2,3]   <== match found!
+//  [2,3]   <== match found at i = 1
 //[3,2,3,4]
 
 //outer loop range is i = 0; i <= ArrayA.length - ArrayB.length
@@ -248,8 +250,93 @@ function isSubarray(arrayA, arrayB) {
   }
 
   // If we've tried every window and never returned, B isn't in A
-  return match;
+  return match; //or we can just return false, since it's implied it will be false
 }
 
 module.exports = { isSubarray };
 ```
+
+# Recursion
+
+## Problem
+
+- The task is to write a recursive function solution(n) that takes an integer n as an input and returns an array of integers from n to 1, inclusive, in decreasing order. Make sure to use recursion in this task.
+
+For example, for n = 5, the output should be [5, 4, 3, 2, 1].
+
+```jsx
+function solution(n) {
+  if (n === 1) {
+    return [1];
+  } else {
+    return [n].concat(solution(n - 1));
+  }
+}
+
+module.exports = { solution };
+```
+
+### Note:
+
+- we use concat to join 2 arrays, and return the joined array
+- we dont return [n].push(some_other_arr) because result of push is length of the new array
+
+## Recursive Question 2
+
+- Given a number n, such as 353, return 3^1 + 5^2 + 3^3
+
+- must use Math.floor(n/10) to chop off the last digit each time.
+
+```jsx
+function solution(n, pos = 1) {
+  // so 253 => 3^1 + 5^2 + 2^3
+  // so you just chop off last digit, raise it to pos, then add pos, all recursively
+  // to chop off last digit you to Math.floor(n/10)
+  // ie: Math.floor(253/10) = 25, Math.floor(25/10) = 2, Math.floor(2/10) = 0
+  // Math.floor(n/10) === 0 is base case, thats when you stop.
+  // each step of recursive step you get right most digit (n%10) ** pos
+
+  if (n === 0) {
+    return 0; //if rest is 1 digit only, return 0
+  } else {
+    let digit = n % 10; //right most digit eg: 253 => 3
+    let rest = Math.floor(n / 10); //shave off right most digit eg: 253 => 25
+    return digit ** pos + solution(rest, pos + 1); // eg: 3^1 + solution(25, 2)
+  }
+}
+```
+
+### Recursive Function: Reverse a String
+
+Here we use string slicing and recursion to reverse a string by peeling off one character at a time.
+
+---
+
+#### How It Works
+
+1. **Base Case**: If the string is empty or has a single character, it is already "reversed." Return it directly.
+2. **Recursive Case**:
+   - **Peel off** the **last character** using `s.slice(-1)` or `s[s.length - 1]`.
+   - **Recurse** on the **remaining substring** (`s.slice(0, -1)`). ello + h => llo + e -> lo + l -> ...
+   - **Concatenate** the peeled character **in front** of the reversed remainder.
+
+---
+
+#### Code Example
+
+```js
+function reverseString(s) {
+  //hello => o + hell => add the last character to the recursive slice
+  // Base case: empty or single-character string
+  if (s.length <= 1) {
+    return s;
+  }
+
+  // Recursive step:
+  // 1. Take the last character
+  // 2. Reverse the rest
+  // 3. Prepend the last character to the reversed remainder
+  return s[s.length - 1] + reverseString(s.slice(0, -1));
+}
+```
+
