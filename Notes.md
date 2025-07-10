@@ -359,6 +359,7 @@ function fibNaive(n) {
 2. Exponential time: O(2ⁿ) calls in the recursion tree.
 
 <b>Memoized Version</b>
+
 ```js
 function fibonacci(n, memo = {}) {
     if(n in memo){ // if there is a cache hit return O(1)
@@ -395,3 +396,122 @@ The first time you call fibonacci(5), it builds up memo like:
 - Every later call to any fib(k) just looks up memo[k], avoiding redundant work.
 
 Memoization lets you reuse all previously computed values instead of re-computing them.
+
+
+# Matrices
+
+
+### isToeplitz
+
+- the algo is to traverse starting from index 1 and row 1, comparing its top left neighbour
+- you can traverse the opposite way as well, starting from the end of the row, and comparing 
+  the bottom right neighbours instead.
+
+```jsx
+function isToeplitz(matrix) {
+    console.log(matrix)
+    // TODO: implement
+    //[
+    //  [6 7 8]
+    //  [4 6 7]
+    //  [1 4 6]
+    //]
+    
+    let rows = matrix.length;
+    let cols = matrix[0].length;
+    for(let i = 1; i < rows; i++){
+        for(let j = 1; j < cols; j++){
+            if(matrix[i][j]!== matrix[i-1][j-1]){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+```
+--- 
+
+## Number of elements less than target
+
+[
+  [1, 2, 3, 4],
+  [2, 3, 4, 5],
+  [3, 4, 5, 6],
+  [4, 5, 6, 7]
+]
+
+### Inneficient method O(n * m)
+
+- this method traverses every cell
+
+```jsx
+function countLessThan(matrix, target) {
+    let rows = matrix.length;
+    let cols = matrix[0].length
+    let count = 0;
+    for(let i = 0; i < cols; i++){
+        for(let j = 0; j < cols; j++){
+            if(matrix[i][j] < target){
+                count++
+            }
+        }
+    }
+    return count;
+}
+
+```
+
+### More Efficient Approach
+
+- Since each row is sorted in ascending order, you don’t need to restart the column scan for every row.
+- Maintain a single pointer `j` starting at the last column index (`cols - 1`).
+- For each row `i`:
+  1. **Move `j` left** (decrement) **while** `j >= 0` **and** `matrix[i][j] >= target`.  
+     This finds the first element **< target** in that row.
+  2. Once you stop, all columns `0…j` in row `i` are `< target`, so **add** `j + 1` to your `count`.
+- Because `j` only moves left (from `cols-1` down to `0` at most once), the total work for the inner loop across **all** rows is **O(cols)**, plus **O(rows)** for the outer loop.
+
+```js
+function countLessThanOptimized(matrix, target) {
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+  let count = 0;
+  let j = cols - 1;
+
+  for (let i = 0; i < rows; i++) {
+    while (j >= 0 && matrix[i][j] >= target) {
+      j--;
+    }
+    count += (j + 1);
+  }
+
+  return count;
+}
+```
+
+- my first more efficient method still restarted the column scan when searching at a new row, having pointer j really cuts down unecessary work
+
+```js
+function countLessThan(matrix, target) {
+    console.log(matrix);
+    console.log(target)
+    let rows = matrix.length;
+    let cols = matrix[0].length
+    let count = 0;
+    for(let i = 0; i < rows; i++){
+        for(let j = cols-1; j >= 0; j-- ){
+            if(matrix[i][j] < target){
+                count = count + (j+1)
+                break;
+            }
+        }
+    }
+    console.log(count)
+    return count;
+}
+```
+
+- worst case this is O(row*col) still due to nested loops!
+
+---
