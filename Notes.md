@@ -340,3 +340,58 @@ function reverseString(s) {
 }
 ```
 
+## Memoization and recursion
+
+### Why Memoization Improves Fibonacci
+
+The naive recursive Fibonacci repeatedly recomputes the same values over and over:
+
+```js
+function fibNaive(n) {
+  if (n === 0) return 0;
+  if (n === 1) return 1;
+  return fibNaive(n - 1) + fibNaive(n - 2);
+}
+```
+
+1. Inefficient: fibNaive(5) calls fibNaive(3) and fibNaive(2) multiple times.
+
+2. Exponential time: O(2ⁿ) calls in the recursion tree.
+
+<b>Memoized Version</b>
+```js
+function fibonacci(n, memo = {}) {
+    if(n in memo){ // if there is a cache hit return O(1)
+        return memo[n]
+    }
+    if(n ===0){
+        return 0;
+    }else if(n === 1){
+        return 1;
+    }else{
+        let result = fibonacci(n-1, memo) + fibonacci(n-2, memo)
+        memo[n] = result; //store the result for later use
+        return result; // once youve stored it, return it
+    }
+}
+
+```
+
+- If we’ve already computed fibonacci(n), return it immediately in O(1) time. That way we dont need to recompute intermediates more than once.
+
+- Subsequent requests for the same n skip the recursive calls entirely.
+
+## Benefits
+- Time Complexity drops from O(2ⁿ) to O(n), since each value fib(0) through fib(n) is computed only once.
+
+- Space Complexity is O(n) for the memo object plus the recursion stack.
+
+- Scalable: Even fibonacci(50) or higher runs almost instantly, whereas the naive version would take prohibitively long.
+
+## How It Works in Action
+The first time you call fibonacci(5), it builds up memo like:
+
+{2: 1, 3: 2, 4: 3, 5: 5}
+- Every later call to any fib(k) just looks up memo[k], avoiding redundant work.
+
+Memoization lets you reuse all previously computed values instead of re-computing them.
